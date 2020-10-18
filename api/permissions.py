@@ -17,7 +17,12 @@ class IsCancelable(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         days_left = (obj.gym_class.date - timezone.now().date()).days
-        if days_left >= 0 and obj.gym_class.time > timezone.now().time():
+        if days_left > 0:
             return True
+        elif days_left == 0:
+            if obj.gym_class.time > timezone.now().time():
+                return True
+            else:
+                return False
         else:
             return False
