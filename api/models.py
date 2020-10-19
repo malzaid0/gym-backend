@@ -11,9 +11,14 @@ class Gym(models.Model):
 
 
 class Class(models.Model):
+    CARDIO = 'CR'
+    STRENGTH = 'ST'
+    KICKBOXING = 'KB'
+    SWIMMING = 'SW'
+    CLASSES_TYPES = [('Cardio', 'Cardio'), ('Strength', 'Strength'), ('Kickboxing', 'Kickboxing'), ('Swimming', 'Swimming'), ]
     gym = models.ForeignKey(Gym, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
-    type = models.CharField(max_length=150)
+    type = models.CharField(max_length=15, choices=CLASSES_TYPES, default=CARDIO,)
     date = models.DateField()
     time = models.TimeField()
     is_free = models.BooleanField()
