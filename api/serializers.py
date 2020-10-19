@@ -35,9 +35,15 @@ class CreateGymSerializer(serializers.ModelSerializer):
 
 
 class GymSerializer(serializers.ModelSerializer):
+    classes = serializers.SerializerMethodField()
+
     class Meta:
         model = Gym
-        fields = ["name", "address", "id"]
+        fields = ["name", "address", "id", "classes"]
+
+    def get_classes(self, obj):
+        classes = Class.objects.filter(gym=obj)
+        return ClassSerializer(classes, many=True).data
 
 
 class CreateClassSerializer(serializers.ModelSerializer):
@@ -46,7 +52,15 @@ class CreateClassSerializer(serializers.ModelSerializer):
         fields = ["title", "type", "date", "time", "is_free", "capacity", "gym"]
 
 
+class NoClassesGymSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Gym
+        fields = ["name", "address", "id"]
+
+
 class ClassSerializer(serializers.ModelSerializer):
+    gym = NoClassesGymSerializer()
+
     class Meta:
         model = Class
         fields = ["title", "type", "date", "time", "is_free", "capacity", "gym", "available", "id"]
@@ -63,4 +77,4 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ["gym_class", "user"]
+        fields = ["gym_class", "user", "id"]

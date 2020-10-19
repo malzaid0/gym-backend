@@ -7,6 +7,7 @@ from .models import Gym, Class, Booking
 from .permissions import IsCancelable, IsBookingOwner
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.core.mail import send_mail
+from django.contrib.auth.models import User
 
 
 class Register(CreateAPIView):
@@ -59,12 +60,13 @@ class BookClass(CreateAPIView):
         else:
             booked.available -= 1
             booked.save()
+        user = User.objects.get(id=2)
         instance = serializer.save(user=self.request.user)
         send_mail(
             'Class booked',
             f"booking id: {instance.id}",
             '3a1a3f93e1-d2fae3@inbox.mailtrap.io',
-            [self.request.user.email],
+            [user.email],
             fail_silently=False,)
 
 
